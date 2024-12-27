@@ -1,8 +1,10 @@
 package de.nielsfalk.desktop.filecleaner.domain
 
+import de.nielsfalk.desktop.filecleaner.domain.FileReader.countInDirectories
 import de.nielsfalk.desktop.filecleaner.domain.FileReader.duplicatesByHashedContentAndSize
 import de.nielsfalk.desktop.filecleaner.domain.FileReader.duplicatesBySize
 import de.nielsfalk.desktop.filecleaner.domain.FileReader.listContainingFiles
+import de.nielsfalk.desktop.filecleaner.domain.FileReader.scanForDuplicates
 import de.nielsfalk.desktop.filecleaner.domain.FileReader.toFileInfos
 import io.kotest.core.spec.style.FreeSpec
 import java.nio.file.Path
@@ -63,7 +65,7 @@ class FileReaderTest : FreeSpec({
     }
 
     "duplicates by size and hash" {
-        val givenFileInfos = setOf(
+        val givenDuplicatesBySize = setOf(
             resourceAsPath("testfiles"),
             resourceAsPath("othertestfiles/sameContentInOtherDirectory.txt")
         )
@@ -71,7 +73,7 @@ class FileReaderTest : FreeSpec({
             .toFileInfos()
             .duplicatesBySize()
 
-        val result: Map<String, List<FileInfo>> = givenFileInfos
+        val result: Map<String, List<FileInfo>> = givenDuplicatesBySize
             .duplicatesByHashedContentAndSize()
 
 
@@ -86,6 +88,51 @@ class FileReaderTest : FreeSpec({
             result.mapValues { (_, files) -> files.map { it.path.fileName.toString() } }
         )
     }
+
+    "directoryCounts"{
+        val basePath = resourceAsPath("testfiles")
+
+        val givenFileInfos = setOf(
+            resourceAsPath("testfiles"),
+            resourceAsPath("othertestfiles/sameContentInOtherDirectory.txt")
+        )
+            .listContainingFiles()
+            .toFileInfos()
+        val givenDuplicatesByHashedContent = givenFileInfos
+            .duplicatesBySize()
+            .duplicatesByHashedContentAndSize()
+
+        val result = countInDirectories(givenFileInfos, givenDuplicatesByHashedContent)
+
+        assertEquals(
+            listOf(
+                DirectoryCounts(
+                    resourceAsPath("testfiles"),
+                    duplicatesCount = 2,
+                    nonDuplicatesCount = 2
+                ),
+                DirectoryCounts(
+                    resourceAsPath("othertestfiles"),
+                    duplicatesCount = 1,
+                    nonDuplicatesCount = 0
+                )
+            ),
+            result
+        )
+    }
+
+    "scanForDuplicates" {
+        val recordedStates = mutableListOf<LoadingState>()
+        val givenPaths = setOf(
+            resourceAsPath("testfiles"),
+            resourceAsPath("othertestfiles/sameContentInOtherDirectory.txt")
+        )
+
+        givenPaths.scanForDuplicates({ recordedStates += it })
+
+        assertEquals(LoadingState.entries, recordedStates.toList())
+    }
+
 })
 
 fun resourceAsPath(name: String): Path =
