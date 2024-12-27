@@ -1,9 +1,9 @@
-package de.nielsfalk.desktop.filecleaner
+package de.nielsfalk.desktop.filecleaner.ui
 
 import androidx.lifecycle.ViewModel
-import de.nielsfalk.desktop.filecleaner.FileCleanerEvent.AddFiles
-import de.nielsfalk.desktop.filecleaner.FileCleanerEvent.RemoveAllFiles
-import de.nielsfalk.desktop.filecleaner.FileCleanerEvent.RemoveFile
+import de.nielsfalk.desktop.filecleaner.ui.FileCleanerEvent.AddFiles
+import de.nielsfalk.desktop.filecleaner.ui.FileCleanerEvent.RemoveAllFiles
+import de.nielsfalk.desktop.filecleaner.ui.FileCleanerEvent.RemoveFile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

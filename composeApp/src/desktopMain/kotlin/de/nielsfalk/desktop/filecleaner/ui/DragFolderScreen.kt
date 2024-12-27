@@ -1,4 +1,4 @@
-package de.nielsfalk.desktop.filecleaner
+package de.nielsfalk.desktop.filecleaner.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -35,8 +35,8 @@ import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.awtTransferable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import de.nielsfalk.desktop.filecleaner.FileCleanerEvent.AddFiles
-import de.nielsfalk.desktop.filecleaner.FileCleanerEvent.RemoveFile
+import de.nielsfalk.desktop.filecleaner.ui.FileCleanerEvent.AddFiles
+import de.nielsfalk.desktop.filecleaner.ui.FileCleanerEvent.RemoveFile
 import java.awt.datatransfer.DataFlavor.javaFileListFlavor
 import java.io.File
 

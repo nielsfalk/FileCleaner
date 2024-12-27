@@ -1,4 +1,4 @@
-package de.nielsfalk.desktop.filecleaner
+package de.nielsfalk.desktop.filecleaner.ui
 
 import java.io.File
 
