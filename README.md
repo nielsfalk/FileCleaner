@@ -1,11 +1,18 @@
-This is a Kotlin Multiplatform project targeting Desktop.
+# File Cleaner
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+This is a desktop app to find and cleanup duplicate files
 
+![](images/dragFolders.png)
+![](images/findingDuplicates.png)
+![](images/reviewDuplicates.png)
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## Build for Os
+
+macos
+`./gradlew clean composeApp:packageReleaseDmg`
+
+Debian
+`./gradlew clean composeApp:packageReleaseDmg`
+
+Windows
+`./gradlew clean composeApp:packageReleaseMsi`
