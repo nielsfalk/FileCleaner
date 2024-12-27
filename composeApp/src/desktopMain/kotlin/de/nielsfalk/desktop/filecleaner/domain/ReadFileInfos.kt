@@ -16,11 +16,22 @@ object FileReader {
             .toSet()
     }
 
-    fun List<Path>.toFileInfos()= map { FileInfo(it) }
+    fun List<Path>.toFileInfos() = map { FileInfo(it) }
 
     fun List<FileInfo>.duplicatesBySize(): Map<Long, List<FileInfo>> =
         groupBy { it.size }
             .filter { (_, files) -> files.size > 1 }
+
+    fun Map<Long, List<FileInfo>>.duplicatesByHashedContentAndSize(): Map<String, List<FileInfo>> {
+        return flatMap { (size, files) ->
+            files.groupBy { it.hashedContent }
+                .filter { (_, files) -> files.size > 1 }
+                .map { (hash, files) ->
+                    "$size $hash" to files
+                }
+
+        }.toMap()
+    }
 }
 
 data class FileInfo(

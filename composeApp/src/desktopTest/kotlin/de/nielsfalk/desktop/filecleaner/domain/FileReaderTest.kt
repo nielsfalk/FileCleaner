@@ -1,5 +1,6 @@
 package de.nielsfalk.desktop.filecleaner.domain
 
+import de.nielsfalk.desktop.filecleaner.domain.FileReader.duplicatesByHashedContentAndSize
 import de.nielsfalk.desktop.filecleaner.domain.FileReader.duplicatesBySize
 import de.nielsfalk.desktop.filecleaner.domain.FileReader.listContainingFiles
 import de.nielsfalk.desktop.filecleaner.domain.FileReader.toFileInfos
@@ -52,6 +53,31 @@ class FileReaderTest : FreeSpec({
             mapOf(
                 12L to listOf(
                     "sameSize.txt",
+                    "sameContent2.txt",
+                    "sameContent1.txt",
+                    "sameContentInOtherDirectory.txt"
+                )
+            ),
+            result.mapValues { (_, files) -> files.map { it.path.fileName.toString() } }
+        )
+    }
+
+    "duplicates by size and hash" {
+        val givenFileInfos = setOf(
+            resourceAsPath("testfiles"),
+            resourceAsPath("othertestfiles/sameContentInOtherDirectory.txt")
+        )
+            .listContainingFiles()
+            .toFileInfos()
+            .duplicatesBySize()
+
+        val result: Map<String, List<FileInfo>> = givenFileInfos
+            .duplicatesByHashedContentAndSize()
+
+
+        assertEquals(
+            mapOf(
+                "12 pja9fNQgYKTQf6G_vMAQ63eUwrpyHh4-TCAzWhW2bq8=" to listOf(
                     "sameContent2.txt",
                     "sameContent1.txt",
                     "sameContentInOtherDirectory.txt"
