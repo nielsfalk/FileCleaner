@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import de.nielsfalk.desktop.filecleaner.ui.FileCleanerEvent.AddFiles
 import de.nielsfalk.desktop.filecleaner.ui.FileCleanerEvent.RemoveFile
+import de.nielsfalk.desktop.filecleaner.ui.FileCleanerEvent.ScanForDuplicates
 import java.awt.datatransfer.DataFlavor.javaFileListFlavor
 import java.io.File
 
@@ -97,7 +98,7 @@ fun DragFolderScreen(
                 Text("Drop files and folders here", Modifier.align(Alignment.Center))
             }
             LazyColumn(modifier = Modifier.weight(1f)) {
-                items(items = state.files.toList(), itemContent = {
+                items(items = state.directoriesToScan.toList(), itemContent = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(text = it.absolutePath)
                         IconButton(onClick = { onEvent(RemoveFile(it)) }) {
@@ -111,14 +112,17 @@ fun DragFolderScreen(
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = SpaceBetween) {
                 Button(
-                    enabled = state.files.isNotEmpty(),
+                    enabled = state.directoriesToScan.isNotEmpty(),
                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
                     onClick = { onEvent(FileCleanerEvent.RemoveAllFiles) }) {
                     Text("Remove all files above")
                 }
                 Button(
-                    enabled = state.files.isNotEmpty(),
-                    onClick = { navigate(FindDuplicates(listOf())) }) {
+                    enabled = state.directoriesToScan.isNotEmpty(),
+                    onClick = {
+                        onEvent(ScanForDuplicates)
+                        navigate(FindDuplicates(listOf()))
+                    }) {
                     Text("Search folders")
                 }
             }

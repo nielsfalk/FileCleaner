@@ -26,10 +26,12 @@ fun App() {
                 )
             }
             composable<FindDuplicates> {
-                FindDuplicatesScreen(navController)
+                FindDuplicatesScreen(
+                    navController::navigate,
+                    state,
+                    viewModel::onEvent)
             }
         }
-
     }
 }
 
