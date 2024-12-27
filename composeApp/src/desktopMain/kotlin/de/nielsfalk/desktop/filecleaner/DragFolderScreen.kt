@@ -30,13 +30,13 @@ import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.awt.datatransfer.DataFlavor
+import java.awt.datatransfer.DataFlavor.javaFileListFlavor
+import java.io.File
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun DragFolderScreen(navController: NavHostController) {
     var showTargetBorder by remember { mutableStateOf(false) }
-    var targetText by remember { mutableStateOf("Drop files and folders here") }
-    val coroutineScope = rememberCoroutineScope()
     val dragAndDropTarget = remember<DragAndDropTarget> {
         object : DragAndDropTarget {
 
@@ -49,18 +49,9 @@ fun DragFolderScreen(navController: NavHostController) {
             }
 
             override fun onDrop(event: DragAndDropEvent): Boolean {
-                val result = targetText == "Drop files and folders here"
-                targetText = event.awtTransferable.let {
-                    if (it.isDataFlavorSupported(DataFlavor.stringFlavor))
-                        it.getTransferData(DataFlavor.stringFlavor) as String
-                    else
-                        it.transferDataFlavors.first().humanPresentableName
-                }
-                coroutineScope.launch {
-                    delay(2000)
-                    targetText = "Drop files and folders here"
-                }
-                return result
+                val files = event.getFiles()
+                println("files = ${files}")
+                return true
             }
         }
     }
@@ -92,11 +83,20 @@ fun DragFolderScreen(navController: NavHostController) {
                             Modifier
                     )
             ) {
-                Text(targetText, Modifier.align(Alignment.Center))
+                Text("Drop files and folders here", Modifier.align(Alignment.Center))
             }
             Button(onClick = { navController.navigate(FindDuplicates(listOf())) }) {
                 Text("Search folders")
             }
         }
     }
+}
+
+@Suppress("UNCHECKED_CAST")
+@OptIn(ExperimentalComposeUiApi::class)
+private fun DragAndDropEvent.getFiles(): List<File>? =
+    awtTransferable.run {
+    if (isDataFlavorSupported(javaFileListFlavor))
+        getTransferData(javaFileListFlavor) as? List<File>
+    else null
 }
